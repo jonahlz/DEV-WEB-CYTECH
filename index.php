@@ -1,5 +1,5 @@
 <?php
-require_once 'C:/xampp/htdocs/Lumihome/includes/config.php';
+require_once __DIR__ . '/includes/config.php';
 
 $page = $_GET['page'] ?? 'home';
 $allowed = ['home','dashboard','admin','profil','login','register'];
