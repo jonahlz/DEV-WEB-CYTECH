@@ -1,4 +1,6 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 
     
@@ -41,15 +43,10 @@
         require '../PHPMailer-master/PHPMailer-master/src/SMTP.php';
         require '../PHPMailer-master/PHPMailer-master/src/Exception.php';
 
-
-        use PHPMailer\PHPMailer\PHPMailer;
-        use PHPMailer\PHPMailer\Exception;
-
-
         $mail = new PHPMailer(true);
 
         $token = bin2hex(random_bytes(32));
-        $lien = "http://localhost/aida/pages/verification.php?token=" . $token;
+        $lien = "http://localhost/Lumihome/pages/verification.php?token=" . $token;
 
         try {
             $mail->isSMTP();
@@ -71,13 +68,13 @@
             $mail->Body = $mail->Body = "
                 <div style='font-family: Arial; text-align:center;'>
 
-                    <h2>Welcome Aida </h2>
+                    <h2>Bienvenue sur Lumihome </h2>
 
                     <img src='https://cdn-icons-png.flaticon.com/512/295/295128.png' width='100'>
 
                     <p>Cliquez ici pour confimer votre compte!</p>
 
-                    <a href='localhost' 
+                    <a href='{$lien}' 
                         style='display:inline-block;
                             padding:12px 20px;
                             background:#28a745;
@@ -93,9 +90,9 @@
                 ";
 
             $mail->send();
-            echo "Email envoyé!";
+            echo $token;
             
         } catch (Exception $e) {
-            echo "Error: {$mail->ErrorInfo}";
+            echo false; 
         }
     }

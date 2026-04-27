@@ -56,6 +56,7 @@ if ($action === 'login') {
 if ($action === 'logout') { session_destroy(); jsonResponse(['ok'=>true,'redirect'=>'/Lumihome/index.php']); }
 
 // ---- ADD LIGHT ----
+
 if ($action === 'add_light') {
     if(!isLoggedIn()) jsonResponse(['ok'=>false,'msg'=>'Non connecté'],401);
     $nom    = trim($_POST['nom']    ?? '');
@@ -68,7 +69,7 @@ if ($action === 'add_light') {
     $temp   = min(6500,max(2700,(int)($_POST['temp']??4000)));
     $couleur= preg_match('/^#[0-9a-fA-F]{6}$/',$_POST['couleur']??'') ? $_POST['couleur'] : '#FFFFFF';
     $desc   = trim($_POST['desc']   ?? '');
-    if(!$nom) jsonResponse(['ok'=>false,'msg'=>'Le nom est obligatoire.']);
+    if(!$nom) jsonResponse(['ok'=>false,'msg'=>'Le nom est obligatoire.']); 
     if($watt<1) jsonResponse(['ok'=>false,'msg'=>'La puissance doit être supérieure à 0.']);
     try {
         $pdo=db();

@@ -41,26 +41,28 @@ CREATE TABLE IF NOT EXISTS pieces (
 -- LUMIÈRES CONNECTÉES
 -- --------------------------------------------------------
 CREATE TABLE IF NOT EXISTS lumieres (
-    id                  INT AUTO_INCREMENT PRIMARY KEY,
-    nom                 VARCHAR(100) NOT NULL,
-    marque              VARCHAR(60),
-    modele              VARCHAR(60),
-    description         TEXT,
-    connectivite        ENUM('Wi-Fi','Zigbee','Bluetooth','Z-Wave') DEFAULT 'Wi-Fi',
-    signal_force        INT DEFAULT 90,
-    puissance_max_watt  FLOAT DEFAULT 9,
-    etat                ENUM('actif','inactif','erreur') DEFAULT 'inactif',
-    luminosite          INT DEFAULT 100,
-    couleur_hex         VARCHAR(7) DEFAULT '#FFFFFF',
-    temperature_couleur INT DEFAULT 4000,
-    conso_watt          FLOAT DEFAULT 0,
-    nb_allumages        INT DEFAULT 0,
-    duree_utilisation_h FLOAT DEFAULT 0,
-    derniere_action     DATETIME DEFAULT CURRENT_TIMESTAMP,
-    id_piece            INT,
-    FOREIGN KEY (id_piece) REFERENCES pieces(id) ON DELETE SET NULL
+    id                   INT AUTO_INCREMENT PRIMARY KEY,
+    nom                  VARCHAR(100) NOT NULL,
+    marque               VARCHAR(60),
+    modele               VARCHAR(60),
+    description          TEXT,
+    connectivite         ENUM('Wi-Fi','Zigbee','Bluetooth','Z-Wave') DEFAULT 'Wi-Fi',
+    signal_force         INT DEFAULT 90,
+    puissance_max_watt   FLOAT DEFAULT 9,
+    etat                 ENUM('actif','inactif','erreur') DEFAULT 'inactif',
+    luminosite           INT DEFAULT 100,
+    couleur_hex          VARCHAR(7) DEFAULT '#FFFFFF',
+    temperature_couleur  INT DEFAULT 4000,
+    conso_watt           FLOAT DEFAULT 0,
+    nb_allumages         INT DEFAULT 0,
+    duree_utilisation_h  FLOAT DEFAULT 0,
+    derniere_action      DATETIME DEFAULT CURRENT_TIMESTAMP,
+    id_piece             INT,
+    id_user              INT,
+    FOREIGN KEY (id_piece) REFERENCES pieces(id) ON DELETE SET NULL,
+    FOREIGN KEY (id_user) REFERENCES utilisateurs(id) ON DELETE CASCADE
 );
-
+    
 -- --------------------------------------------------------
 -- HISTORIQUE (logs IoT)
 -- --------------------------------------------------------
@@ -123,7 +125,7 @@ INSERT INTO lumieres (nom, marque, modele, connectivite, signal_force, puissance
 -- Utilisateurs : admin + 2 membres
 -- Mots de passe hashés avec password_hash('motdepasse', PASSWORD_DEFAULT)
 -- admin → mdp: Admin1234!
--- sophie → mdp: Sophie2025
+-- sophie → mdp: Sophie2025 
 -- lucas → mdp: Lucas2025
 INSERT INTO utilisateurs (login, nom, prenom, email, mot_de_passe, role, age, sexe, date_naissance, type_membre, points) VALUES
 ('admin',  'Martin', 'Admin',  'admin@lumihome.fr',  '$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin',  38, 'F', '1986-03-12', 'mère',    99.0),

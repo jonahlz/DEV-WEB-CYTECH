@@ -7,7 +7,7 @@ if (!in_array($page, $allowed)) $page = 'home';
 
 // Protections
 if ($page === 'dashboard' && !isLoggedIn()) { header('Location: /Lumihome/index.php?page=login'); exit; }
-if ($page === 'profil'    && !isLoggedIn()) { header('Location: /Lumihome/index.php?page=login'); exit; }
+if ($page === 'profil'    && !isLoggedIn()) { header('Location: /Lumihome/index.php?page=login'); exit; } 
 if ($page === 'admin'     && !isAdmin())     { header('Location: /Lumihome/index.php?page=dashboard'); exit; }
 if (($page === 'login' || $page === 'register') && isLoggedIn()) { header('Location: /Lumihome/index.php?page=dashboard'); exit; }
 
@@ -204,7 +204,7 @@ nav{position:sticky;top:0;z-index:100;background:rgba(13,15,20,.92);backdrop-fil
 if ($page === 'home') include __DIR__.'/pages/home.php';
 elseif ($page === 'dashboard') include __DIR__.'/pages/dashboard.php';
 elseif ($page === 'admin') include __DIR__.'/pages/admin.php';
-elseif ($page === 'profil') include __DIR__.'/pages/profil.php';
+elseif ($page === 'profil') include __DIR__ . '/pages/profil.php';
 ?>
 
 <!-- ====== MODAL INSCRIPTION ====== -->
