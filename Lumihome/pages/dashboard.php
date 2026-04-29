@@ -82,11 +82,12 @@ $peut_ajouter = $nb_lumieres < $droits['limite'];
       <h1 style="font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;margin-bottom:.15rem">
         <?= $greet ?>, <?= $prenom_esc ?> <?= $droits['emoji'] ?>
       </h1>
-      <p style="font-size:.85rem;color:var(--muted)">
+      <p id="header-niv-sub" style="font-size:.85rem;color:var(--muted)">
         Niveau <strong style="color:<?= escape($droits['color']) ?>"><?= escape($droits['label']) ?></strong>
         — <?= $nb_lumieres ?>/<?= $droits['limite'] == 99 ? '∞' : $droits['limite'] ?> lumières
       </p>
     </div>
+    <div id="add-btn-zone">
     <?php if ($peut_ajouter): ?>
     <button class="btn btn-primary" onclick="openModal('add-light-modal')">+ Ajouter une lumière</button>
     <?php else: ?>
@@ -96,6 +97,7 @@ $peut_ajouter = $nb_lumieres < $droits['limite'];
       🔒 Limite atteinte (<?= $droits['limite'] ?>)
     </button>
     <?php endif; ?>
+    </div>
   </div>
 
   <!-- STATS ──────────────────────────────────────────────── -->
@@ -144,28 +146,28 @@ $peut_ajouter = $nb_lumieres < $droits['limite'];
   <div class="card" style="margin-bottom:1.5rem;padding:1rem 1.5rem;
        display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap">
     <div style="display:flex;align-items:center;gap:.85rem">
-      <div style="font-size:1.75rem"><?= $niv_user['niv_emoji'] ?? '🌱' ?></div>
+      <div style="font-size:1.75rem" id="prog-emoji"><?= $niv_user['niv_emoji'] ?? '🌱' ?></div>
       <div>
         <div style="font-size:.72rem;color:var(--muted);font-weight:600;text-transform:uppercase;letter-spacing:.4px">Votre niveau</div>
-        <div style="font-family:'Syne',sans-serif;font-weight:800;color:<?= escape($col) ?>;font-size:1.1rem">
+        <div id="prog-niveau-label" style="font-family:'Syne',sans-serif;font-weight:800;color:<?= escape($col) ?>;font-size:1.1rem">
           <?= escape($niv_user['niv_libelle'] ?? ucfirst($niv_user['niveau'])) ?>
         </div>
       </div>
     </div>
-    <div style="flex:1;min-width:180px">
+    <div style="flex:1;min-width:180px" id="prog-bar-zone">
       <?php if ($prochain_niv): ?>
-      <div style="display:flex;justify-content:space-between;font-size:.73rem;color:var(--muted);margin-bottom:.35rem">
-        <span><?= round($pts,2) ?> pts</span>
-        <span>→ <?= escape($prochain_niv['emoji'].' '.$prochain_niv['libelle']) ?> (<?= $prochain_niv['pts_requis'] ?> pts)</span>
+      <div style="display:flex;justify-content:space-between;font-size:.73rem;color:var(--muted);margin-bottom:.35rem" id="prog-bar-labels">
+        <span id="prog-pts"><?= round($pts,2) ?> pts</span>
+        <span id="prog-next-label">→ <?= escape($prochain_niv['emoji'].' '.$prochain_niv['libelle']) ?> (<?= $prochain_niv['pts_requis'] ?> pts)</span>
       </div>
       <div style="height:7px;background:var(--surface2);border-radius:4px;overflow:hidden">
-        <div style="height:100%;width:<?= $prog ?>%;background:<?= escape($col) ?>;border-radius:4px;transition:width 1s"></div>
+        <div id="prog-bar-fill" style="height:100%;width:<?= $prog ?>%;background:<?= escape($col) ?>;border-radius:4px;transition:width .8s ease"></div>
       </div>
       <?php else: ?>
-      <div style="font-size:.8rem;color:#f97316">👑 Niveau maximum atteint !</div>
+      <div id="prog-bar-labels" style="font-size:.8rem;color:#f97316">👑 Niveau maximum atteint !</div>
       <?php endif; ?>
     </div>
-    <a href="/Lumihome/index.php?page=niveaux" class="btn btn-outline btn-sm"
+    <a href="/Lumihome/index.php?page=niveaux" id="prog-btn" class="btn btn-outline btn-sm"
        style="white-space:nowrap;border-color:<?= escape($col) ?>;color:<?= escape($col) ?>">
       Voir ma progression →
     </a>
@@ -250,52 +252,53 @@ $peut_ajouter = $nb_lumieres < $droits['limite'];
 
 <!-- MODAL AJOUTER LUMIÈRE ───────────────────────────────── -->
 <div class="modal-overlay" id="add-light-modal">
-<div class="modal">
-  <h2>➕ Ajouter une lumière</h2>
-  <p class="modal-sub">Enregistrez une nouvelle lumière connectée.</p>
-  <div class="form-group"><label class="form-label">Nom *</label>
-    <input class="form-input" id="al-nom" placeholder="ex: Lustre Salon"></div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Marque *</label>
-      <select class="form-input" id="al-marque">
+<div class="lh-modal">
+  <?php
+  $i = 'style="display:block;width:100%;padding:.3rem .65rem;font-size:.82rem;font-family:DM Sans,sans-serif;line-height:1.4;background:#1e2330;border:1px solid #2a3040;border-radius:7px;color:#e8eaf0;box-shadow:none;outline:none;margin:0"';
+  $s = 'style="display:block;width:100%;padding:.3rem .65rem;font-size:.82rem;font-family:DM Sans,sans-serif;line-height:1.4;background:#1e2330;border:1px solid #2a3040;border-radius:7px;color:#e8eaf0;box-shadow:none;outline:none;margin:0;-webkit-appearance:none;appearance:none;background-image:url(\'data:image/svg+xml,%3csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 16 16%27%3e%3cpath fill=%27none%27 stroke=%27%237a8299%27 stroke-linecap=%27round%27 stroke-linejoin=%27round%27 stroke-width=%272%27 d=%27m2 5 6 6 6-6%27/%3e%3c/svg%3e\');background-repeat:no-repeat;background-position:right .5rem center;background-size:12px;padding-right:1.8rem"';
+  $l = 'style="display:block;font-size:.72rem;color:#7a8299;margin:0 0 .15rem 0;font-weight:500"';
+  $g = 'style="margin-bottom:.4rem"';
+  $r = 'style="display:grid;grid-template-columns:1fr 1fr;gap:.4rem;margin-bottom:.4rem"';
+  ?>
+  <h2 style="font-family:Syne,sans-serif;font-size:1rem;font-weight:800;margin:0 0 .05rem 0;color:#e8eaf0">➕ Ajouter une lumière</h2>
+  <p style="font-size:.72rem;color:#7a8299;margin:0 0 .6rem 0">Enregistrez une nouvelle lumière connectée.</p>
+
+  <div <?= $g ?>><label <?= $l ?>>Nom *</label><input id="al-nom" placeholder="ex: Lustre Salon" <?= $i ?>></div>
+  <div <?= $r ?>>
+    <div><label <?= $l ?>>Marque *</label>
+      <select id="al-marque" <?= $s ?>>
         <option>Philips Hue</option><option>IKEA</option><option>Yeelight</option>
         <option>Govee</option><option>BenQ</option><option>Osram</option>
         <option>Müller Licht</option><option>Autre</option>
       </select></div>
-    <div class="form-group"><label class="form-label">Modèle</label>
-      <input class="form-input" id="al-modele" placeholder="ex: Hue White A19"></div>
+    <div><label <?= $l ?>>Modèle</label><input id="al-modele" placeholder="ex: Hue White A19" <?= $i ?>></div>
   </div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Pièce</label>
-      <select class="form-input" id="al-piece">
+  <div <?= $r ?>>
+    <div><label <?= $l ?>>Pièce</label>
+      <select id="al-piece" <?= $s ?>>
         <option value="">— Aucune —</option>
         <?php foreach($pieces as $p): ?>
         <option value="<?= $p['id'] ?>"><?= escape($p['emoji'].' '.$p['nom']) ?></option>
         <?php endforeach; ?>
       </select></div>
-    <div class="form-group"><label class="form-label">Connectivité</label>
-      <select class="form-input" id="al-connect">
-        <option>Wi-Fi</option><option>Zigbee</option>
-        <option>Bluetooth</option><option>Z-Wave</option>
+    <div><label <?= $l ?>>Connectivité</label>
+      <select id="al-connect" <?= $s ?>>
+        <option>Wi-Fi</option><option>Zigbee</option><option>Bluetooth</option><option>Z-Wave</option>
       </select></div>
   </div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Puissance max (W) *</label>
-      <input class="form-input" id="al-watt" type="number" min="1" max="200" value="9"></div>
-    <div class="form-group"><label class="form-label">Signal (%)</label>
-      <input class="form-input" id="al-signal" type="number" min="0" max="100" value="90"></div>
+  <div <?= $r ?>>
+    <div><label <?= $l ?>>Puissance max (W) *</label><input id="al-watt" type="number" min="1" max="200" value="9" <?= $i ?>></div>
+    <div><label <?= $l ?>>Signal (%)</label><input id="al-signal" type="number" min="0" max="100" value="90" <?= $i ?>></div>
   </div>
-  <div class="form-row">
-    <div class="form-group"><label class="form-label">Température couleur (K)</label>
-      <input class="form-input" id="al-temp" type="number" min="2700" max="6500" value="4000"></div>
-    <div class="form-group"><label class="form-label">Couleur par défaut</label>
-      <input class="form-input" id="al-couleur" type="color" value="#FFFFFF" style="height:42px;cursor:pointer"></div>
+  <div <?= $r ?>>
+    <div><label <?= $l ?>>Température (K)</label><input id="al-temp" type="number" min="2700" max="6500" value="4000" <?= $i ?>></div>
+    <div><label <?= $l ?>>Couleur défaut</label><input id="al-couleur" type="color" value="#FFFFFF" style="display:block;width:100%;height:34px;padding:.1rem .3rem;background:#1e2330;border:1px solid #2a3040;border-radius:7px;cursor:pointer;margin:0"></div>
   </div>
-  <div class="form-group"><label class="form-label">Description</label>
-    <input class="form-input" id="al-desc" placeholder="ex: Lustre central du salon"></div>
-  <div class="modal-footer">
-    <button class="btn btn-outline" onclick="closeModal('add-light-modal')">Annuler</button>
-    <button class="btn btn-primary" onclick="doAddLight()">Ajouter →</button>
+  <div <?= $g ?>><label <?= $l ?>>Description</label><input id="al-desc" placeholder="ex: Lustre central du salon" <?= $i ?>></div>
+
+  <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:.6rem;padding-top:.55rem;border-top:1px solid #2a3040">
+    <button class="btn btn-outline btn-sm" onclick="closeModal('add-light-modal')">Annuler</button>
+    <button class="btn btn-primary btn-sm" onclick="doAddLight()">Ajouter →</button>
   </div>
 </div>
 </div>
@@ -474,9 +477,9 @@ async function toggleLight(id, on, maxW) {
     if (!d.ok) { toast(d.msg, false); renderLights(); return; }
     const l = lights.find(x => x.id == id);
     if (l) { l.etat = etat; l.conso_watt = conso; if (on) l.luminosite = 100; }
-    if (d.pts_gagnes > 0) showPtsBadge('+' + d.pts_gagnes + ' pt');
     resetFiltres(); renderLights(); updateStatsUI(d.stats);
     toast(on ? '💡 Lumière allumée' : '🌙 Lumière éteinte');
+    updateProgressionUI(d.pts_gagnes);
 }
 
 // Aperçu en temps réel de l'intensité (sans appel API)
@@ -498,8 +501,8 @@ async function commitIntensity(id, lum) {
     document.getElementById('lv-conso-' + id).textContent = d.conso + ' W';
     document.getElementById('lv-badge-' + id).textContent = d.conso + ' W · ' + costPerHour(d.conso) + ' €/h';
     document.getElementById('lv-bar-' + id).style.width = lum + '%';
-    if (d.pts_gagnes > 0) showPtsBadge('+' + d.pts_gagnes + ' pt');
     updateStatsUI(d.stats);
+    updateProgressionUI(d.pts_gagnes);
 }
 
 // Valider la couleur (appel API immédiat)
@@ -512,8 +515,8 @@ async function commitCouleur(id, couleur) {
     const hex = document.getElementById('lv-hex-' + id);
     if (sw)  sw.style.background = couleur;
     if (hex) hex.textContent = couleur;
-    if (d.pts_gagnes > 0) showPtsBadge('+' + d.pts_gagnes + ' pt');
     updateStatsUI(d.stats);
+    updateProgressionUI(d.pts_gagnes);
 }
 
 // Ajouter une lumière
@@ -545,12 +548,12 @@ async function doAddLight() {
     nbLumieres = d.nb_lumieres;
     DROITS.peutAjouter = nbLumieres < DROITS.limite;
     closeModal('add-light-modal');
-    renderLights(); updateStatsUI(d.stats); updateLimiteUI();
-    showPtsBadge('+1 pt');
+    renderLights(); updateStatsUI(d.stats);
     toast('💡 Lumière ajoutée !');
     document.getElementById('al-nom').value = '';
     document.getElementById('al-modele').value = '';
     document.getElementById('al-desc').value = '';
+    updateProgressionUI(1);
 }
 
 // Supprimer une lumière
@@ -561,8 +564,9 @@ async function deleteLight(id, nom) {
     lights = lights.filter(l => l.id != id);
     nbLumieres = d.nb_lumieres;
     DROITS.peutAjouter = nbLumieres < DROITS.limite;
-    renderLights(); updateStatsUI(d.stats); updateLimiteUI();
+    renderLights(); updateStatsUI(d.stats);
     toast('🗑️ Lumière supprimée.');
+    updateProgressionUI(0);
 }
 
 // Badge de points flottant (feedback visuel immédiat)
@@ -581,6 +585,89 @@ function showPtsBadge(txt) {
         document.head.appendChild(s);
     }
     setTimeout(() => b.remove(), 950);
+}
+
+// ============================================================
+// Mise à jour en direct : barre de progression, points, limite
+// ============================================================
+async function updateProgressionUI(ptsGagnes) {
+    // Badge immédiat si points gagnés
+    if (ptsGagnes > 0) showPtsBadge('+' + ptsGagnes + ' pt');
+
+    // Récupère les données fraîches depuis le serveur
+    const d = await api('get_progression');
+    if (!d.ok) return;
+
+    // ── Barre de progression ──────────────────────────────
+    const barZone = document.getElementById('prog-bar-zone');
+    if (barZone) {
+        if (d.prochain) {
+            barZone.innerHTML = `
+              <div style="display:flex;justify-content:space-between;font-size:.73rem;color:var(--muted);margin-bottom:.35rem">
+                <span id="prog-pts">${d.points} pts</span>
+                <span id="prog-next-label">→ ${d.prochain.emoji} ${d.prochain.libelle} (${d.prochain.pts_requis} pts)</span>
+              </div>
+              <div style="height:7px;background:var(--surface2);border-radius:4px;overflow:hidden">
+                <div id="prog-bar-fill" style="height:100%;width:${d.progression}%;background:${d.couleur_hex};border-radius:4px;transition:width .8s ease"></div>
+              </div>`;
+        } else {
+            barZone.innerHTML = `<div style="font-size:.8rem;color:#f97316">👑 Niveau maximum atteint !</div>`;
+        }
+    }
+
+    // ── Emoji & libellé du niveau ─────────────────────────
+    const emojiEl = document.getElementById('prog-emoji');
+    if (emojiEl) emojiEl.textContent = d.niv_emoji;
+
+    const labelEl = document.getElementById('prog-niveau-label');
+    if (labelEl) {
+        labelEl.textContent = d.niv_libelle;
+        labelEl.style.color = d.couleur_hex;
+    }
+
+    const btnEl = document.getElementById('prog-btn');
+    if (btnEl) {
+        btnEl.style.borderColor = d.couleur_hex;
+        btnEl.style.color       = d.couleur_hex;
+    }
+
+    // ── Compteur lumières (stat card) ────────────────────
+    const limEl = document.getElementById('s-limite');
+    if (limEl) {
+        const limStr = d.limite === 99 ? '∞' : d.limite;
+        limEl.textContent = `${d.nb_lumieres}/${limStr} — niveau ${d.niv_libelle}`;
+    }
+
+    // ── Mise à jour de nbLumieres et des droits JS ────────
+    nbLumieres       = d.nb_lumieres;
+    DROITS.peutAjouter = d.peut_ajouter;
+
+    // ── Bouton Ajouter / Limite atteinte (en haut à droite) ──
+    const addBtnZone = document.getElementById('add-btn-zone');
+    if (addBtnZone) {
+        if (d.peut_ajouter) {
+            addBtnZone.innerHTML = `<button class="btn btn-primary" onclick="openModal('add-light-modal')">+ Ajouter une lumière</button>`;
+        } else {
+            addBtnZone.innerHTML = `<button class="btn btn-outline" style="cursor:not-allowed;opacity:.6"
+                onclick="toast('🔒 Limite de ${d.limite} lumières atteinte. Montez de niveau pour en ajouter !', false)"
+                title="Limite atteinte pour ce niveau">
+                🔒 Limite atteinte (${d.limite})
+            </button>`;
+        }
+    }
+
+    // ── Sous-titre niveau / nb lumières (en haut) ─────────
+    const subEl = document.getElementById('header-niv-sub');
+    if (subEl) {
+        const limStr = d.limite === 99 ? '∞' : d.limite;
+        subEl.innerHTML = `Niveau <strong style="color:${d.couleur_hex}">${d.niv_libelle}</strong> — ${d.nb_lumieres}/${limStr} lumières`;
+    }
+
+    // ── Si montée de niveau : rechargement pour débloquer les fonctionnalités
+    if (d.niveau !== DROITS.niveau) {
+        toast('🎉 Niveau ' + d.niv_libelle + ' atteint ! Rechargement en cours…');
+        setTimeout(() => location.reload(), 1800);
+    }
 }
 
 renderLights();

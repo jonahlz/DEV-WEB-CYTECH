@@ -416,6 +416,62 @@ if ($action === 'changer_niveau') {
     }
 }
 
+// ---- PROGRESSION UTILISATEUR (points, niveau, barre) ----
+if ($action === 'get_progression') {
+    try {
+        $pdo = db();
+        $st  = $pdo->prepare('SELECT u.points, u.niveau, u.pts_connexion, u.pts_actions,
+                                     nc.couleur_hex, nc.emoji AS niv_emoji, nc.libelle AS niv_libelle,
+                                     nc.pts_requis AS seuil_actuel_pts
+                              FROM utilisateurs u
+                              LEFT JOIN niveaux_config nc ON nc.niveau = u.niveau
+                              WHERE u.id = ?');
+        $st->execute([$uid]);
+        $niv_user = $st->fetch();
+
+        $stPN = $pdo->prepare('SELECT * FROM niveaux_config WHERE pts_requis > ? ORDER BY pts_requis ASC LIMIT 1');
+        $stPN->execute([$niv_user['points'] ?? 0]);
+        $prochain = $stPN->fetch();
+
+        $stNb = $pdo->prepare('SELECT COUNT(*) FROM lumieres WHERE id_user = ?');
+        $stNb->execute([$uid]);
+        $nb_lumieres = (int)$stNb->fetchColumn();
+
+        // Recalcul niveau session
+        $niveau_actuel = $_SESSION['niveau'] ?? 'debutant';
+        $cfg_actuel    = NIVEAUX_CONFIG[$niveau_actuel] ?? NIVEAUX_CONFIG['debutant'];
+
+        $seuils = ['debutant'=>0,'intermediaire'=>3,'avance'=>5,'expert'=>20];
+        $seuil_bas  = $seuils[$niv_user['niveau']] ?? 0;
+        $seuil_haut = $prochain ? (float)$prochain['pts_requis'] : $seuil_bas;
+        $range      = $prochain ? ($seuil_haut - $seuil_bas) : 1;
+        $pts        = (float)($niv_user['points'] ?? 0);
+        $prog       = $prochain ? min(100, round(($pts - $seuil_bas) / max(1,$range) * 100)) : 100;
+
+        jsonResponse([
+            'ok'           => true,
+            'points'       => round($pts, 2),
+            'niveau'       => $niv_user['niveau'],
+            'niv_libelle'  => $niv_user['niv_libelle'],
+            'niv_emoji'    => $niv_user['niv_emoji'],
+            'couleur_hex'  => $niv_user['couleur_hex'],
+            'progression'  => $prog,
+            'seuil_bas'    => $seuil_bas,
+            'seuil_haut'   => $seuil_haut,
+            'prochain'     => $prochain ? [
+                'libelle'   => $prochain['libelle'],
+                'emoji'     => $prochain['emoji'],
+                'pts_requis'=> $prochain['pts_requis'],
+            ] : null,
+            'nb_lumieres'   => $nb_lumieres,
+            'limite'        => $cfg_actuel['limite_lumieres'],
+            'peut_ajouter'  => $nb_lumieres < $cfg_actuel['limite_lumieres'],
+        ]);
+    } catch (Exception $e) {
+        jsonResponse(['ok' => false, 'msg' => $e->getMessage()]);
+    }
+}
+
 // ---- Action inconnue ----
 jsonResponse(['ok' => false, 'msg' => 'Action inconnue : ' . $action], 400);
 

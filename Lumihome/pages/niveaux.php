@@ -427,7 +427,7 @@ $libelle_niveau = $user['niveau_libelle'] ?? ucfirst($user['niveau']);
 
 <!-- MODAL CONFIRMATION CHANGEMENT NIVEAU ─────────────────── -->
 <div class="modal-overlay" id="confirm-niveau-modal">
-  <div class="modal">
+  <div class="lh-modal">
     <h2>Changer de niveau</h2>
     <p class="modal-sub" id="confirm-niveau-msg">Confirmer le passage de niveau ?</p>
     <div class="modal-footer">

@@ -73,7 +73,7 @@ $created_at  = !empty($profil['created_at'])
       <div style="display:flex;justify-content:space-between;align-items:flex-start;
                   gap:1rem;flex-wrap:wrap;margin-bottom:1rem">
         <div>
-          <div style="font-family:Syne,sans-serif;font-size:1.5rem;font-weight:800">
+          <div style="font-family:Syne,sans-serif;font-size:1.5rem;font-weight:800;color:#e8eaf0">
             <?= $prenom . ' ' . $nom ?>
           </div>
           <div style="font-size:.85rem;color:var(--muted);margin-top:.2rem">
@@ -92,27 +92,27 @@ $created_at  = !empty($profil['created_at'])
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem">
         <div>
           <div class="meta-lbl">Email</div>
-          <div class="meta-val"><?= $email ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= $email ?></div>
         </div>
         <div>
           <div class="meta-lbl">Sexe</div>
-          <div class="meta-val"><?= escape($sexe) ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= escape($sexe) ?></div>
         </div>
         <div>
           <div class="meta-lbl">Date de naissance</div>
-          <div class="meta-val"><?= $dob ? date('d/m/Y', strtotime($dob)) : '-' ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= $dob ? date('d/m/Y', strtotime($dob)) : '-' ?></div>
         </div>
         <div>
           <div class="meta-lbl">Âge</div>
-          <div class="meta-val"><?= $age ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= $age ?></div>
         </div>
         <div>
           <div class="meta-lbl">Points</div>
-          <div class="meta-val"><?= $points ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= $points ?></div>
         </div>
         <div>
           <div class="meta-lbl">Membre depuis</div>
-          <div class="meta-val"><?= $created_at ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= $created_at ?></div>
         </div>
       </div>
 
@@ -134,17 +134,17 @@ $created_at  = !empty($profil['created_at'])
         <div style="padding:.85rem 1rem;background:var(--surface2);
                     border:1px solid var(--border);border-radius:10px">
           <div class="meta-lbl">Compte</div>
-          <div class="meta-val"><?= ucfirst($role) ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= ucfirst($role) ?></div>
         </div>
         <div style="padding:.85rem 1rem;background:var(--surface2);
                     border:1px solid var(--border);border-radius:10px">
           <div class="meta-lbl">Type de membre</div>
-          <div class="meta-val"><?= escape($type_membre) ?></div>
+          <div class="meta-val" style="color:#e8eaf0"><?= escape($type_membre) ?></div>
         </div>
         <div style="padding:.85rem 1rem;background:var(--surface2);
                     border:1px solid var(--border);border-radius:10px">
           <div class="meta-lbl">Identifiant</div>
-          <div class="meta-val">@<?= $login ?></div>
+          <div class="meta-val" style="color:#e8eaf0">@<?= $login ?></div>
         </div>
       </div>
     </div>
